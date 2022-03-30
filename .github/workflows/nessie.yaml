@@ -617,9 +617,6 @@ jobs:
       TAG: ${{ needs.deploy-image.outputs.tag }}
       # Setting Account_ID as a secret as a way to avoid specifying it here
       REPO: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
-      AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
-      AWS_SESSION_TOKEN: ${{ env.AWS_SESSION_TOKEN }}
     steps:
       - name: Check-out code
         uses: actions/checkout@v2
@@ -674,9 +671,6 @@ jobs:
       TAG: ${{ needs.deploy-image.outputs.tag }}
       # Setting Account_ID as a secret as a way to avoid specifying it here
       REPO: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
-      AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
-      AWS_SESSION_TOKEN: ${{ env.AWS_SESSION_TOKEN }}
     steps:
       - name: Check-out code
         uses: actions/checkout@v2
@@ -704,9 +698,6 @@ jobs:
       TAG: ${{ needs.deploy-image.outputs.tag }}
       # Setting Account_ID as a secret as a way to avoid specifying it here
       REPO: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
-      AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
-      AWS_SESSION_TOKEN: ${{ env.AWS_SESSION_TOKEN }}
     steps:
       - name: Check-out code
         uses: actions/checkout@v2

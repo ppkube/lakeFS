@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -10,6 +11,29 @@ import (
 	"github.com/treeverse/lakefs/pkg/config"
 	"github.com/treeverse/lakefs/pkg/logging"
 )
+
+type OnlyString string
+
+var (
+	onlyStringType  = reflect.TypeOf(OnlyString(""))
+	stringType      = reflect.TypeOf("")
+	ErrMustBeString = errors.New("must be a string")
+)
+
+// DecodeOnlyString is a mapstructure.HookFuncType that decodes a string
+// value as an OnlyString, but fails on all other values.  It is useful to
+// force parsing of a field that can contain just digits as a string, when
+// the leading digit might be 0.
+func DecodeOnlyString(fromValue reflect.Value, toValue reflect.Value) (interface{}, error) {
+	if toValue.Type() != onlyStringType {
+		// Not trying to translate to OnlyString
+		return fromValue.Interface(), nil
+	}
+	if fromValue.Type() != stringType {
+		return nil, fmt.Errorf("%w, not a %s", ErrMustBeString, fromValue.Type().String())
+	}
+	return OnlyString(fromValue.Interface().(string)), nil
+}
 
 // configuration is the user-visible configuration structure in Golang form.  When editing
 // make sure *all* fields have a `mapstructure:"..."` tag, to simplify future refactoring.
@@ -38,8 +62,8 @@ type configuration struct {
 				SessionToken    string `mapstructure:"session_token"`
 			} `mapstructure:"credentials"`
 
-			Region    string `mapstructure:"region"`
-			CatalogID string `mapstructure:"catalog_id"`
+			Region    string     `mapstructure:"region"`
+			CatalogID OnlyString `mapstructure:"catalog_id"`
 		}
 		// setting FixSparkPlaceholder to true will change spark placeholder with the actual location. for more information see https://github.com/treeverse/lakeFS/issues/2213
 		FixSparkPlaceholder bool `mapstructure:"fix_spark_placeholder"`
@@ -122,7 +146,7 @@ func (c *Config) GetMetastoreHiveURI() string {
 }
 
 func (c *Config) GetMetastoreGlueCatalogID() string {
-	return c.Values.Metastore.Glue.CatalogID
+	return string(c.Values.Metastore.Glue.CatalogID)
 }
 func (c *Config) GetMetastoreType() string {
 	return c.Values.Metastore.Type

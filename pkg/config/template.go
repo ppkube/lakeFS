@@ -16,7 +16,7 @@ var (
 	stringSliceType = reflect.TypeOf([]string{})
 )
 
-// decodeStrings is a mapstructure.HookFuncType that decodes a single string value or a slice
+// DecodeStrings is a mapstructure.HookFuncType that decodes a single string value or a slice
 // of strings into Strings.
 func DecodeStrings(fromValue reflect.Value, toValue reflect.Value) (interface{}, error) {
 	if toValue.Type() != ourStringsType {

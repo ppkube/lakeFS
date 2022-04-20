@@ -31,7 +31,7 @@ object GarbageCollector {
   def getHadoopConfigurationValues(hc: Configuration, prefix: String): ConfMap =
     hc.iterator.asScala
       .filter(_.getKey.startsWith(prefix))
-      .map(e => (e.getKey, e.getValue))
+      .map(entry => (entry.getKey, entry.getValue))
       .toList
       .asInstanceOf[ConfMap]
 
@@ -288,6 +288,11 @@ object GarbageCollector {
       "" //args(2) // TODO(Guys): get previous runID from arguments or from storage
     val hc = spark.sparkContext.hadoopConfiguration
 
+    // Spark operators will need to generate configured FileSystems to read
+    // ranges and metaranges.  They will not have a JobContext to let them
+    // do that.  Transmit (all) Hadoop filesystem configuration values to
+    // let them generate a (close-enough) Hadoop configuration to build the
+    // needed FileSystems.
     val hcValues = spark.sparkContext.broadcast(getHadoopConfigurationValues(hc, "fs."))
 
     val apiURL = hc.get(LAKEFS_CONF_API_URL_KEY)
